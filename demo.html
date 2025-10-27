@@ -1,0 +1,951 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Happy Homes - Services</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+
+        :root {
+            --primary: #ff3269;
+            --primary-dark: #e61e56;
+            --secondary: #2d2d2d;
+            --light-gray: #f8f9fa;
+            --medium-gray: #e9ecef;
+            --dark-gray: #6c757d;
+            --text: #333333;
+            --white: #ffffff;
+            --shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+        }
+
+        body {
+            background-color: var(--light-gray);
+            color: var(--text);
+            line-height: 1.6;
+        }
+
+        /* Header Styles */
+        header {
+            background-color: var(--white);
+            box-shadow: var(--shadow);
+            position: sticky;
+            top: 0;
+            z-index: 1000;
+        }
+
+        .top-bar {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 12px 5%;
+            border-bottom: 1px solid var(--medium-gray);
+        }
+
+        .logo {
+            font-size: 24px;
+            font-weight: 700;
+            color: var(--primary);
+            text-decoration: none;
+            display: flex;
+            align-items: center;
+        }
+
+        .logo i {
+            margin-right: 8px;
+        }
+
+        .location-container {
+            position: relative;
+        }
+
+        .location {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            font-weight: 500;
+            cursor: pointer;
+            padding: 8px 12px;
+            border-radius: 4px;
+            transition: background-color 0.3s;
+        }
+
+        .location:hover {
+            background-color: var(--medium-gray);
+        }
+
+        .location i {
+            color: var(--primary);
+        }
+
+        .location-modal {
+            display: none;
+            position: absolute;
+            top: 100%;
+            left: 0;
+            width: 300px;
+            background: var(--white);
+            border-radius: 8px;
+            box-shadow: var(--shadow);
+            padding: 20px;
+            z-index: 1001;
+            margin-top: 10px;
+        }
+
+        .location-modal.active {
+            display: block;
+        }
+
+        .location-modal h3 {
+            margin-bottom: 15px;
+            color: var(--text);
+            font-size: 18px;
+        }
+
+        .location-search {
+            display: flex;
+            margin-bottom: 15px;
+        }
+
+        .location-search input {
+            flex: 1;
+            padding: 10px;
+            border: 1px solid var(--medium-gray);
+            border-radius: 4px 0 0 4px;
+            outline: none;
+        }
+
+        .location-search button {
+            background: var(--primary);
+            color: var(--white);
+            border: none;
+            padding: 0 15px;
+            border-radius: 0 4px 4px 0;
+            cursor: pointer;
+        }
+
+        .popular-cities {
+            margin-top: 15px;
+        }
+
+        .popular-cities h4 {
+            margin-bottom: 10px;
+            font-size: 14px;
+            color: var(--dark-gray);
+        }
+
+        .cities-list {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 8px;
+        }
+
+        .city-option {
+            padding: 6px 12px;
+            background: var(--light-gray);
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 14px;
+            transition: background 0.3s;
+        }
+
+        .city-option:hover {
+            background: var(--medium-gray);
+        }
+
+        .user-actions {
+            display: flex;
+            gap: 20px;
+            align-items: center;
+        }
+
+        .user-actions a {
+            text-decoration: none;
+            color: var(--text);
+            font-weight: 500;
+            transition: color 0.3s;
+        }
+
+        .user-actions a:hover {
+            color: var(--primary);
+        }
+
+        .user-actions .login-btn {
+            background-color: var(--primary);
+            color: var(--white);
+            padding: 8px 20px;
+            border-radius: 4px;
+            transition: background-color 0.3s;
+        }
+
+        .user-actions .login-btn:hover {
+            background-color: var(--primary-dark);
+            color: var(--white);
+        }
+
+        nav {
+            padding: 15px 5%;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .nav-links {
+            display: flex;
+            list-style: none;
+            gap: 25px;
+        }
+
+        .nav-links a {
+            text-decoration: none;
+            color: var(--text);
+            font-weight: 500;
+            transition: color 0.3s;
+            position: relative;
+            padding: 8px 0;
+        }
+
+        .nav-links a:hover {
+            color: var(--primary);
+        }
+
+        .nav-links a::after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            width: 0;
+            height: 2px;
+            background-color: var(--primary);
+            transition: width 0.3s;
+        }
+
+        .nav-links a:hover::after {
+            width: 100%;
+        }
+
+        .search-bar {
+            display: flex;
+            align-items: center;
+            background: var(--medium-gray);
+            border-radius: 4px;
+            padding: 10px 15px;
+            width: 300px;
+            transition: box-shadow 0.3s;
+        }
+
+        .search-bar:focus-within {
+            box-shadow: 0 0 0 2px rgba(255, 50, 105, 0.2);
+        }
+
+        .search-bar input {
+            border: none;
+            background: transparent;
+            outline: none;
+            width: 100%;
+            margin-left: 8px;
+            font-size: 14px;
+        }
+
+        /* Hero Section */
+        .hero {
+            background: linear-gradient(rgba(0, 0, 0, 0.7), rgba(0, 0, 0, 0.7)), url('https://images.unsplash.com/photo-1581578731548-c64695cc6952?ixlib=rb-4.0.3&auto=format&fit=crop&w=1350&q=80');
+            background-size: cover;
+            background-position: center;
+            color: var(--white);
+            padding: 100px 5%;
+            text-align: center;
+        }
+
+        .hero h1 {
+            font-size: 48px;
+            margin-bottom: 20px;
+            font-weight: 700;
+        }
+
+        .hero p {
+            font-size: 20px;
+            max-width: 700px;
+            margin: 0 auto 30px;
+            opacity: 0.9;
+        }
+
+        .cta-button {
+            background-color: var(--primary);
+            color: var(--white);
+            border: none;
+            padding: 14px 35px;
+            font-size: 18px;
+            border-radius: 4px;
+            cursor: pointer;
+            transition: background-color 0.3s, transform 0.2s;
+            font-weight: 600;
+        }
+
+        .cta-button:hover {
+            background-color: var(--primary-dark);
+            transform: translateY(-2px);
+        }
+
+        /* Services Section */
+        .services {
+            padding: 80px 5%;
+        }
+
+        .section-title {
+            text-align: center;
+            margin-bottom: 50px;
+        }
+
+        .section-title h2 {
+            font-size: 36px;
+            color: var(--text);
+            margin-bottom: 15px;
+            font-weight: 700;
+        }
+
+        .section-title p {
+            color: var(--dark-gray);
+            max-width: 600px;
+            margin: 0 auto;
+            font-size: 18px;
+        }
+
+        .services-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+            gap: 30px;
+        }
+
+        .service-card {
+            background: var(--white);
+            border-radius: 8px;
+            overflow: hidden;
+            box-shadow: var(--shadow);
+            transition: transform 0.3s, box-shadow 0.3s;
+            cursor: pointer;
+        }
+
+        .service-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.15);
+        }
+
+        .service-img {
+            height: 200px;
+            background-size: cover;
+            background-position: center;
+            position: relative;
+        }
+
+        .service-badge {
+            position: absolute;
+            top: 15px;
+            left: 15px;
+            background-color: var(--primary);
+            color: var(--white);
+            padding: 5px 10px;
+            border-radius: 4px;
+            font-size: 12px;
+            font-weight: 600;
+        }
+
+        .service-content {
+            padding: 20px;
+        }
+
+        .service-content h3 {
+            margin-bottom: 10px;
+            font-size: 18px;
+            font-weight: 600;
+        }
+
+        .service-content p {
+            color: var(--dark-gray);
+            font-size: 14px;
+            margin-bottom: 15px;
+            line-height: 1.5;
+        }
+
+        .service-price {
+            color: var(--primary);
+            font-weight: 700;
+            font-size: 18px;
+        }
+
+        /* User Stats Section */
+        .user-stats {
+            background-color: var(--primary);
+            color: var(--white);
+            padding: 80px 5%;
+            text-align: center;
+        }
+
+        .stats-container {
+            display: flex;
+            justify-content: space-around;
+            flex-wrap: wrap;
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        .stat-item {
+            margin: 20px;
+            padding: 20px;
+        }
+
+        .stat-number {
+            font-size: 48px;
+            font-weight: 700;
+            margin-bottom: 10px;
+        }
+
+        .stat-label {
+            font-size: 18px;
+            opacity: 0.9;
+        }
+
+        /* App Section */
+        .app-section {
+            padding: 80px 5%;
+            background-color: var(--white);
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            flex-wrap: wrap;
+        }
+
+        .app-content {
+            flex: 1;
+            min-width: 300px;
+            padding: 20px;
+        }
+
+        .app-content h2 {
+            font-size: 36px;
+            margin-bottom: 20px;
+            font-weight: 700;
+        }
+
+        .app-content p {
+            color: var(--dark-gray);
+            margin-bottom: 30px;
+            max-width: 500px;
+            font-size: 18px;
+        }
+
+        .app-buttons {
+            display: flex;
+            gap: 15px;
+        }
+
+        .app-btn {
+            display: flex;
+            align-items: center;
+            background: var(--secondary);
+            color: var(--white);
+            padding: 12px 20px;
+            border-radius: 8px;
+            text-decoration: none;
+            font-weight: 500;
+            transition: transform 0.2s;
+        }
+
+        .app-btn:hover {
+            transform: translateY(-2px);
+        }
+
+        .app-btn i {
+            font-size: 24px;
+            margin-right: 10px;
+        }
+
+        .app-image {
+            flex: 1;
+            min-width: 300px;
+            text-align: center;
+        }
+
+        .app-image img {
+            max-width: 100%;
+            height: auto;
+            border-radius: 12px;
+            box-shadow: var(--shadow);
+        }
+
+        /* Footer */
+        footer {
+            background-color: var(--secondary);
+            color: var(--white);
+            padding: 60px 5% 30px;
+        }
+
+        .footer-content {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 40px;
+            margin-bottom: 40px;
+        }
+
+        .footer-column h3 {
+            font-size: 18px;
+            margin-bottom: 20px;
+            color: var(--primary);
+        }
+
+        .footer-links {
+            list-style: none;
+        }
+
+        .footer-links li {
+            margin-bottom: 10px;
+        }
+
+        .footer-links a {
+            color: #ccc;
+            text-decoration: none;
+            transition: color 0.3s;
+        }
+
+        .footer-links a:hover {
+            color: var(--primary);
+        }
+
+        .social-links {
+            display: flex;
+            gap: 15px;
+            margin-top: 20px;
+        }
+
+        .social-links a {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            width: 36px;
+            height: 36px;
+            background-color: rgba(255, 255, 255, 0.1);
+            border-radius: 50%;
+            color: var(--white);
+            font-size: 16px;
+            transition: background-color 0.3s, transform 0.2s;
+        }
+
+        .social-links a:hover {
+            background-color: var(--primary);
+            transform: translateY(-2px);
+        }
+
+        .copyright {
+            text-align: center;
+            padding-top: 30px;
+            border-top: 1px solid #444;
+            color: #999;
+            font-size: 14px;
+        }
+
+        /* Responsive Design */
+        @media (max-width: 768px) {
+            .top-bar, nav {
+                flex-direction: column;
+                gap: 15px;
+            }
+
+            .nav-links {
+                flex-wrap: wrap;
+                justify-content: center;
+            }
+
+            .search-bar {
+                width: 100%;
+                max-width: 400px;
+            }
+
+            .hero h1 {
+                font-size: 36px;
+            }
+
+            .hero p {
+                font-size: 16px;
+            }
+
+            .stats-container {
+                flex-direction: column;
+            }
+
+            .app-section {
+                flex-direction: column;
+            }
+
+            .app-buttons {
+                flex-direction: column;
+            }
+            
+            .location-modal {
+                width: 250px;
+                left: -50px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Header -->
+    <header>
+        <div class="top-bar">
+            <a href="#" class="logo"><i class="fas fa-home"></i>HAPPY HOMES</a>
+            <div class="location-container">
+                <div class="location">
+                    <i class="fas fa-map-marker-alt"></i>
+                    <span id="current-city">Chennai</span>
+                    <i class="fas fa-chevron-down"></i>
+                </div>
+                <div class="location-modal" id="locationModal">
+                    <h3>Change Location</h3>
+                    <div class="location-search">
+                        <input type="text" id="locationInput" placeholder="Search for your city">
+                        <button id="locationSearchBtn"><i class="fas fa-search"></i></button>
+                    </div>
+                    <div class="popular-cities">
+                        <h4>Popular Cities</h4>
+                        <div class="cities-list">
+                            <div class="city-option" data-city="Delhi">Delhi</div>
+                            <div class="city-option" data-city="Mumbai">Mumbai</div>
+                            <div class="city-option" data-city="Bangalore">Bangalore</div>
+                            <div class="city-option" data-city="Hyderabad">Hyderabad</div>
+                            <div class="city-option" data-city="Kolkata">Kolkata</div>
+                            <div class="city-option" data-city="Pune">Pune</div>
+                            <div class="city-option" data-city="Pune">Bhubaneswar</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="user-actions">
+                <a href="#">Become a Partner</a>
+                <a href="#" class="login-btn">Login / Signup</a>
+            </div>
+        </div>
+        <nav>
+            <ul class="nav-links">
+                <li><a href="#">Home Maintenance</a></li>
+                <li><a href="#">Carpentry Services</a></li>
+                <li><a href="#">Painting & Decoration</a></li>
+                <li><a href="#">Appliances Repair</a></li>
+                <li><a href="#">Plumbing Services</a></li>
+                <li><a href="#">Electrical Services</a></li>
+            </ul>
+            <div class="search-bar">
+                <i class="fas fa-search"></i>
+                <input type="text" placeholder="Search for services">
+            </div>
+        </nav>
+    </header>
+
+    <!-- Hero Section -->
+    <section class="hero">
+        <h1>From Leaks to Lighting — We Fix It Right</h1>
+        <p>Trusted Experts for Every Corner of Your Home</p>
+        <p>Book. Relax. We’ll Handle the Rest.</p>
+        <button class="cta-button">Book Now</button>
+    </section>
+
+    <!-- Services Section -->
+    <section class="services">
+        <div class="section-title">
+            <h2>Our Services</h2>
+            <p>From home maintenance to personal care, we've got you covered</p>
+        </div>
+        <div class="services-grid">
+            <div class="service-card">
+                <div class="service-img" style="background-image: url('https://live.staticflickr.com/5617/19564324853_21dc1ff9e2_b.jpg');">
+                    <div class="service-badge">Popular</div>
+                </div>
+                <div class="service-content">
+                    <h3>Home Maintenance</h3>
+                    <p>Quick and reliable repairs, installations, and upkeep to keep your home running smoothly</p>
+                    <div class="service-price">Starting at ₹999</div>
+                </div>
+            </div>
+            <div class="service-card">
+                <div class="service-img" style="background-image: url('https://images.squarespace-cdn.com/content/v1/631570dc14d6ec3d6f9c03a0/01b81654-5347-4280-8c7d-75c62e457bdd/image-from-rawpixel-id-9658875-original.jpg?format=2500w');">
+                    <div class="service-badge">Trending</div>
+                </div>
+                <div class="service-content">
+                    <h3>Carpentry Services</h3>
+                    <p>Expert woodwork, repairs, and custom fittings for furniture, doors, and home interiors.</p>
+                    <div class="service-price">Starting at ₹199</div>
+                </div>
+            </div>
+            <div class="service-card">
+                <div class="service-img" style="background-image: url('https://images.pexels.com/photos/5493664/pexels-photo-5493664.jpeg');">
+                    <div class="service-badge">Best Value</div>
+                </div>
+                <div class="service-content">
+                    <h3>Painting & Decoration</h3>
+                    <p>Professional interior and exterior painting with creative designs for a fresh, vibrant look.</p>
+                    <div class="service-price">Starting at ₹799</div>
+                </div>
+            </div>
+            <div class="service-card">
+                <div class="service-img" style="background-image: url('https://media.easy-peasy.ai/27feb2bb-aeb4-4a83-9fb6-8f3f2a15885e/2b3dd023-c172-4159-9786-5b8dddf707d7.png');">
+                    <div class="service-badge">Popular</div>
+                </div>
+                <div class="service-content">
+                    <h3>Appliance Repair</h3>
+                    <p>AC service, washing machine, refrigerator repair</p>
+                    <div class="service-price">Starting at ₹349</div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- User Stats Section -->
+    <section class="user-stats">
+        <div class="section-title">
+            <h2>Trusted by Millions</h2>
+            <p style="color: black; font-style: italic;">Join our growing community of satisfied customers</p>
+        </div>
+        <div class="stats-container">
+            <div class="stat-item">
+                <div class="stat-number" id="customer-count">5M+</div>
+                <div class="stat-label">Happy Customers</div>
+            </div>
+            <div class="stat-item">
+                <div class="stat-number" id="service-count">10M+</div>
+                <div class="stat-label">Services Delivered</div>
+            </div>
+            <div class="stat-item">
+                <div class="stat-number" id="city-count">50+</div>
+                <div class="stat-label">Cities Across India</div>
+            </div>
+            <div class="stat-item">
+                <div class="stat-number" id="rating-count">4.8</div>
+                <div class="stat-label">Average Rating</div>
+            </div>
+        </div>
+    </section>
+
+    <!-- App Section -->
+    <section class="app-section">
+        <div class="app-content">
+            <h2>Get the HAPPY HOMES App</h2>
+            <p>Book services, track orders, and get exclusive offers with our mobile app</p>
+            <div class="app-buttons">
+                <a href="#" class="app-btn">
+                    <i class="fab fa-apple"></i>
+                    <div>
+                        <small>Download on the</small>
+                        <div>App Store</div>
+                    </div>
+                </a>
+                <a href="#" class="app-btn">
+                    <i class="fab fa-google-play"></i>
+                    <div>
+                        <small>Get it on</small>
+                        <div>Google Play</div>
+                    </div>
+                </a>
+            </div>
+        </div>
+        <div class="app-image">
+            <img src="https://images.unsplash.com/photo-1512941937669-90a1b58e7e9c?ixlib=rb-4.0.3&auto=format&fit=crop&w=500&q=80" alt="Urban Company App">
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer>
+        <div class="footer-content">
+            <div class="footer-column">
+                <h3>UrbanCompany</h3>
+                <ul class="footer-links">
+                    <li><a href="#">About Us</a></li>
+                    <li><a href="#">Careers</a></li>
+                    <li><a href="#">Blog</a></li>
+                    <li><a href="#">Press</a></li>
+                </ul>
+            </div>
+            <div class="footer-column">
+                <h3>Our Services</h3>
+                <ul class="footer-links">
+                    <li><a href="#">Home Maintenance</a></li>
+                    <li><a href="#">Carpentry Services</a></li>
+                    <li><a href="#">Painting & Decoration</a></li>
+                    <li><a href="#">Appliances Repair</a></li>
+                </ul>
+            </div>
+            <div class="footer-column">
+                <h3>Support</h3>
+                <ul class="footer-links">
+                    <li><a href="#">Contact Us</a></li>
+                    <li><a href="#">FAQs</a></li>
+                    <li><a href="#">Terms & Conditions</a></li>
+                    <li><a href="#">Privacy Policy</a></li>
+                </ul>
+            </div>
+            <div class="footer-column">
+                <h3>Follow Us</h3>
+                <div class="social-links">
+                    <a href="#"><i class="fab fa-facebook-f"></i></a>
+                    <a href="#"><i class="fab fa-twitter"></i></a>
+                    <a href="#"><i class="fab fa-instagram"></i></a>
+                    <a href="#"><i class="fab fa-linkedin-in"></i></a>
+                </div>
+            </div>
+        </div>
+        <div class="copyright">
+            <p>&copy; 2025 Happy Homes. All rights reserved.</p>
+        </div>
+    </footer>
+
+    <script>
+        // Location selection functionality
+        const locationElement = document.querySelector('.location');
+        const locationModal = document.getElementById('locationModal');
+        const currentCityElement = document.getElementById('current-city');
+        const locationInput = document.getElementById('locationInput');
+        const locationSearchBtn = document.getElementById('locationSearchBtn');
+        const cityOptions = document.querySelectorAll('.city-option');
+
+        // Toggle location modal
+        locationElement.addEventListener('click', function(e) {
+            e.stopPropagation();
+            locationModal.classList.toggle('active');
+        });
+
+        // Close modal when clicking outside
+        document.addEventListener('click', function(e) {
+            if (!locationModal.contains(e.target) && e.target !== locationElement) {
+                locationModal.classList.remove('active');
+            }
+        });
+
+        // Change city when a city option is clicked
+        cityOptions.forEach(option => {
+            option.addEventListener('click', function() {
+                const selectedCity = this.getAttribute('data-city');
+                currentCityElement.textContent = selectedCity;
+                locationModal.classList.remove('active');
+                
+                // Show confirmation message
+                showNotification(`Location changed to ${selectedCity}`);
+            });
+        });
+
+        // Search for a city
+        locationSearchBtn.addEventListener('click', function() {
+            const searchTerm = locationInput.value.trim();
+            if (searchTerm) {
+                currentCityElement.textContent = searchTerm;
+                locationModal.classList.remove('active');
+                locationInput.value = '';
+                
+                // Show confirmation message
+                showNotification(`Location changed to ${searchTerm}`);
+            }
+        });
+
+        // Allow pressing Enter to search
+        locationInput.addEventListener('keypress', function(e) {
+            if (e.key === 'Enter') {
+                locationSearchBtn.click();
+            }
+        });
+
+        // Show notification function
+        function showNotification(message) {
+            // Create notification element
+            const notification = document.createElement('div');
+            notification.textContent = message;
+            notification.style.cssText = `
+                position: fixed;
+                top: 20px;
+                right: 20px;
+                background: var(--primary);
+                color: white;
+                padding: 12px 20px;
+                border-radius: 4px;
+                box-shadow: var(--shadow);
+                z-index: 10000;
+                font-weight: 500;
+                animation: slideIn 0.3s ease-out;
+            `;
+            
+            document.body.appendChild(notification);
+            
+            // Remove notification after 3 seconds
+            setTimeout(() => {
+                notification.style.animation = 'slideOut 0.3s ease-in';
+                setTimeout(() => {
+                    document.body.removeChild(notification);
+                }, 300);
+            }, 3000);
+        }
+
+        // Add CSS for notification animations
+        const style = document.createElement('style');
+        style.textContent = `
+            @keyframes slideIn {
+                from { transform: translateX(100%); opacity: 0; }
+                to { transform: translateX(0); opacity: 1; }
+            }
+            
+            @keyframes slideOut {
+                from { transform: translateX(0); opacity: 1; }
+                to { transform: translateX(100%); opacity: 0; }
+            }
+        `;
+        document.head.appendChild(style);
+
+        // Animated counter for user statistics
+        function animateCounter(elementId, targetValue, duration = 2000) {
+            const element = document.getElementById(elementId);
+            const startValue = 0;
+            const increment = targetValue / (duration / 16); // 60fps
+            
+            let currentValue = startValue;
+            const timer = setInterval(() => {
+                currentValue += increment;
+                if (currentValue >= targetValue) {
+                    clearInterval(timer);
+                    currentValue = targetValue;
+                }
+                
+                if (elementId === 'rating-count') {
+                    element.textContent = currentValue.toFixed(1);
+                } else {
+                    element.textContent = Math.floor(currentValue).toLocaleString() + '+';
+                }
+            }, 16);
+        }
+
+        // Initialize counters when page loads
+        document.addEventListener('DOMContentLoaded', function() {
+            // Wait a bit for page to render
+            setTimeout(() => {
+                animateCounter('customer-count', 5); // 5M+
+                animateCounter('service-count', 10); // 10M+
+                animateCounter('city-count', 50); // 50+
+                animateCounter('rating-count', 4.8); // 4.8
+            }, 500);
+        });
+
+        // Service card interaction
+        const serviceCards = document.querySelectorAll('.service-card');
+        serviceCards.forEach(card => {
+            card.addEventListener('click', function() {
+                alert('Service booking functionality would go here!');
+            });
+        });
+
+        // CTA button interaction
+        const ctaButton = document.querySelector('.cta-button');
+        ctaButton.addEventListener('click', function() {
+            alert('Redirecting to service booking page...');
+        });
+    </script>
+</body>
+</html>
